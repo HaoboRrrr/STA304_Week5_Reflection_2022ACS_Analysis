@@ -1,0 +1,50 @@
+---
+title: ACS Data analysis
+author: 
+  - Group 23
+date: 03-10-2024
+date-format: long
+format: pdf
+number-sections: true
+---
+
+# Obtaining the data
+1. Go the Ipums website, register using your information. \newline
+2. Locate Ipums USA, click "visit site". \newline
+3. In a blue box, click "Get Data". \newline
+4. On the left side, click "Select Sample", and only select 2022 ACS. Then click "Submit Sample Selection. \newline
+5. 
+
+```{r}
+#| echo: false
+#| message: false
+data <- read.csv("usa_00001.csv")
+library(dplyr)
+```
+
+# Number of Phd in each state
+
+
+# Estimated respondent Vs. Actual respondent
+
+The ratio was calculated by 391,171 divided by the total number of respondent with a phd in California.
+```{r}
+#| echo: false
+#| message: false
+#| fig-cap: Estimated respondent Vs. Actual respondent
+
+library(knitr)
+state <- data %>% group_by(STATEICP) %>% summarise(total = n())
+doctor <- data %>% filter(EDUC >=8) %>% group_by(STATEICP) %>% summarise(number_doc = n())
+
+ratio <- 138590/391171
+predict_total_number <- doctor %>% reframe(STATEICP, Estimated_respondent = round(number_doc/ratio))
+compare <- predict_total_number %>% mutate(Actual_respondent = state$total)
+kable(compare)
+
+```
+
+```{r}
+
+```
+
