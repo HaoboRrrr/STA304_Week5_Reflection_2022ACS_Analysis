@@ -9,11 +9,7 @@ number-sections: true
 ---
 
 # Obtaining the data
-1. Go the Ipums website, register using your information. \newline
-2. Locate Ipums USA, click "visit site". \newline
-3. In a blue box, click "Get Data". \newline
-4. On the left side, click "Select Sample", and only select 2022 ACS. Then click "Submit Sample Selection. \newline
-5. 
+The data was gathered from the IPUMS USA database (https://usa.ipums.org/usa/index.shtml). Use the "Get Data" button on the website, then go to "SELECT SAMPLE". Be sure to deselect all of the default samples. Then check box next to the "2022 ACS", and hit "SUBMIT SAMPLE SELECTIONS". Next we choose which variables we need. Begin be opening the drop-down "HOUSEHOLD" menu, and selecting "GEOGRAPHIC". Then add "STATEICP" to the variable cart by clicking on the plus button. Next expand the drop-down "PERSON" menu, and select "DEMOGRAPHIC". Then add "Sex" to the variable cart. Finally, expand the drop-down "PERSON" menu, and select "EDUCATION". Then add "EDUC" to the variable cart. Then click "VIEW CART", and "CREATE DATA EXTRACT". Be sure to check the option available to ensure you are able to work with the data you will extract. Finally, hit "SUBMIT EXTRACT", note, you will have to create an account if you do not have one. But fear not, your extract request will be saved while you do this.
 
 ```{r}
 #| echo: false
@@ -23,28 +19,35 @@ library(dplyr)
 ```
 
 # Number of Phd in each state
-
-
-# Estimated respondent Vs. Actual respondent
-
-The ratio was calculated by 391,171 divided by the total number of respondent with a phd in California.
 ```{r}
 #| echo: false
-#| message: false
-#| fig-cap: Estimated respondent Vs. Actual respondent
 
 library(knitr)
 state <- data %>% group_by(STATEICP) %>% summarise(total = n())
 doctor <- data %>% filter(EDUC >=8) %>% group_by(STATEICP) %>% summarise(number_doc = n())
+kable(doctor, caption = "Number of Phd in each state")
+
+```
+
+
+# Estimated respondent Vs. Actual respondent
+
+The ratio was calculated by 391,171 divided by the total number of respondent with a PhD in California. Then apply this ration to the number of PhD in each State to get the estimated respondent value.
+```{r}
+#| echo: false
+
+
+library(knitr)
+
 
 ratio <- 138590/391171
 predict_total_number <- doctor %>% reframe(STATEICP, Estimated_respondent = round(number_doc/ratio))
 compare <- predict_total_number %>% mutate(Actual_respondent = state$total)
-kable(compare)
+kable(compare, caption = "Estimated respondent Vs. Actual respondent")
 
 ```
+Difference between them:
 
-```{r}
-
-```
-
+The reason the estimates based on the Laplace ratio might differ from the actual number of respondents in each state is due to variability in educational attainment levels between states. The ratio of doctoral degree holders to the total population may not be constant across all states, as factors like access to education, state population size, and the number of universities within the state can affect the number of individuals pursuing and achieving doctoral degrees.
+For example, states with major research universities or higher proportions of professionals may have higher ratios of doctoral degree holders. Hence, applying California’s ratio to all other states may not accurately reflect the educational composition of smaller or less academic states.
+Because of these factors, the assumption that the ratio of doctoral degree holders in California is representative of other states is likely flawed, leading to potential differences between the estimates and actual values.
