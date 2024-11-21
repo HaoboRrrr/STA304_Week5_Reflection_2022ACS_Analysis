@@ -8,7 +8,6 @@ This project analyzes the 2022 USA Census data, focusing on the actual number of
 - [Methodology](#methodology)
 - [Findings](#findings)
 - [Authors](#authors)
-- [References](#references)
 
 ## Overview
 This analysis examines:
