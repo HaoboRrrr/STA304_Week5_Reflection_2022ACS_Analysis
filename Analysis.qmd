@@ -1,15 +1,21 @@
 ---
-title: ACS Data analysis
+title: Analysis of 2022 USA Census,Focus On Actual Number of Respondent With A Doctoral Degree In Each State Compare To Estimated Number
 author: 
-  - Group 23
-date: 03-10-2024
+  - Chendong Fei
+  - Robert Ford
+  - Rui Hu
+  - Haobo Ren
+  - Xinze Wu
+  - Xinrui Xie
+date: 11 November 2024
 date-format: long
 format: pdf
 number-sections: true
+bibliography: references.bib
 ---
 
 # Obtaining the data
-The data was gathered from the IPUMS USA database (https://usa.ipums.org/usa/index.shtml). Use the "Get Data" button on the website, then go to "SELECT SAMPLE". Be sure to deselect all of the default samples. Then check box next to the "2022 ACS", and hit "SUBMIT SAMPLE SELECTIONS". Next we choose which variables we need. Begin be opening the drop-down "HOUSEHOLD" menu, and selecting "GEOGRAPHIC". Then add "STATEICP" to the variable cart by clicking on the plus button. Next expand the drop-down "PERSON" menu, and select "DEMOGRAPHIC". Then add "Sex" to the variable cart. Finally, expand the drop-down "PERSON" menu, and select "EDUCATION". Then add "EDUC" to the variable cart. Then click "VIEW CART", and "CREATE DATA EXTRACT". Be sure to check the option available to ensure you are able to work with the data you will extract. Finally, hit "SUBMIT EXTRACT", note, you will have to create an account if you do not have one. But fear not, your extract request will be saved while you do this.
+The data[@ipums_usa] was gathered from the IPUMS USA database (https://usa.ipums.org/usa/index.shtml). Use the "Get Data" button on the website, then go to "SELECT SAMPLE". Be sure to deselect all of the default samples. Then check box next to the "2022 ACS", and hit "SUBMIT SAMPLE SELECTIONS". Next we choose which variables we need. Begin be opening the drop-down "HOUSEHOLD" menu, and selecting "GEOGRAPHIC". Then add "STATEICP" to the variable cart by clicking on the plus button. Next expand the drop-down "PERSON" menu, and select "DEMOGRAPHIC". Then add "Sex" to the variable cart. Finally, expand the drop-down "PERSON" menu, and select "EDUCATION". Then add "EDUC" to the variable cart. Then click "VIEW CART", and "CREATE DATA EXTRACT". Be sure to check the option available to ensure you are able to work with the data you will extract. Finally, hit "SUBMIT EXTRACT", note, you will have to create an account if you do not have one. But fear not, your extract request will be saved while you do this.
 
 ```{r}
 #| echo: false
@@ -18,14 +24,14 @@ data <- read.csv("usa_00001.csv")
 library(dplyr)
 ```
 
-# Number of Phd in each state
+# Number of Respondents With A Doctoral Degree As Their Highest Educational Attainment
 ```{r}
 #| echo: false
 
 library(knitr)
 state <- data %>% group_by(STATEICP) %>% summarise(total = n())
 doctor <- data %>% filter(EDUC >=8) %>% group_by(STATEICP) %>% summarise(number_doc = n())
-kable(doctor, caption = "Number of Phd in each state")
+kable(doctor, caption = "Number of Respondents With A Doctoral Degree as Their Highest Educational Attainment")
 
 ```
 
@@ -51,3 +57,8 @@ Difference between them:
 The reason the estimates based on the Laplace ratio might differ from the actual number of respondents in each state is due to variability in educational attainment levels between states. The ratio of doctoral degree holders to the total population may not be constant across all states, as factors like access to education, state population size, and the number of universities within the state can affect the number of individuals pursuing and achieving doctoral degrees.
 For example, states with major research universities or higher proportions of professionals may have higher ratios of doctoral degree holders. Hence, applying California’s ratio to all other states may not accurately reflect the educational composition of smaller or less academic states.
 Because of these factors, the assumption that the ratio of doctoral degree holders in California is representative of other states is likely flawed, leading to potential differences between the estimates and actual values.
+
+\newpage
+
+# References
+
